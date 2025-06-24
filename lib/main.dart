@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'ADAG',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         //Paleta de colores = "#db4a2b" naranja "#e3e1dc"blanco sucio
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0x00000000)),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Tobi Puto'),
     );
   }
 }
@@ -105,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text('You have pushed the button this many times:'),
+            const Text('Apretaste el botoncito esta cantidad de veces:'),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
