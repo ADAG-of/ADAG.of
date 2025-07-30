@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'restaurant_list_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
   final VoidCallback toggleTheme;
@@ -13,7 +15,11 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
   bool _isLoading = false;
+  bool _obscurePassword = true;
+
+  String? _loginError; // <-- Aquí guardamos el error del login
 
   @override
   void dispose() {
@@ -22,29 +28,55 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _login() {
+  Future<void> _login() async {
     if (_formKey.currentState?.validate() ?? false) {
-      setState(() => _isLoading = true);
-
-      Future.delayed(const Duration(seconds: 2), () {
-        setState(() => _isLoading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Inicio de sesión exitoso')),
-        );
+      setState(() {
+        _isLoading = true;
+        _loginError = null; // Limpia errores anteriores
       });
+
+      final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
+
+      try {
+        final response = await Supabase.instance.client.auth
+            .signInWithPassword(email: email, password: password);
+
+        if (response.user != null) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RestaurantListScreen(),
+            ),
+          );
+        }
+      } on AuthException catch (e) {
+        setState(() {
+          _loginError = 'Correo o contraseña incorrectos';
+        });
+      } catch (e) {
+        setState(() {
+          _loginError = 'Error inesperado. Intenta nuevamente.';
+        });
+      } finally {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
+    final bool isOrangeBackground = backgroundColor == const Color(0xFFFF5722);
+    final String logoAsset = isOrangeBackground
+        ? 'assets/images/logo_naranja.png'
+        : 'assets/images/logo_crema.png';
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Iniciar Sesión'),
         actions: [
           IconButton(
-            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
+            icon: Icon(isOrangeBackground ? Icons.light_mode : Icons.dark_mode),
             onPressed: widget.toggleTheme,
           ),
         ],
@@ -53,10 +85,13 @@ class _LoginScreenState extends State<LoginScreen> {
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: ListView(
+            shrinkWrap: true,
             children: [
+              Image.asset(logoAsset, width: 200, height: 200),
+              const SizedBox(height: 16),
               const Text('ADAG',
+                  textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               const SizedBox(height: 32),
               TextFormField(
@@ -79,16 +114,31 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _passwordController,
-                decoration: const InputDecoration(
+                obscureText: _obscurePassword,
+                decoration: InputDecoration(
                   labelText: 'Contraseña',
-                  prefixIcon: Icon(Icons.lock),
+                  prefixIcon: const Icon(Icons.lock),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() => _obscurePassword = !_obscurePassword);
+                    },
+                  ),
                 ),
-                obscureText: true,
                 validator: (value) =>
-                    value == null || value.length < 6
-                        ? 'Mínimo 6 caracteres'
-                        : null,
+                    value == null || value.length < 6 ? 'Mínimo 6 caracteres' : null,
               ),
+              if (_loginError != null) ...[
+                const SizedBox(height: 8),
+                Text(
+                  _loginError!,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ],
               const SizedBox(height: 24),
               buildSubmitButton('Iniciar Sesión', _login, _isLoading),
               const SizedBox(height: 16),
@@ -111,7 +161,14 @@ class _LoginScreenState extends State<LoginScreen> {
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         child: isLoading
-            ? const CircularProgressIndicator(color: Colors.white)
+            ? const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
             : Text(text),
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 16),

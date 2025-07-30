@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+// Asegúrate que en main.dart esté esta línea:
+// final supabase = Supabase.instance.client;
 
 class RegisterScreen extends StatefulWidget {
   final VoidCallback toggleTheme;
@@ -26,17 +30,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  void _register() {
-    if (_formKey.currentState?.validate() ?? false) {
-      setState(() => _isLoading = true);
+  Future<void> _register() async {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
 
-      Future.delayed(const Duration(seconds: 2), () {
-        setState(() => _isLoading = false);
+    setState(() => _isLoading = true);
+
+    try {
+      final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
+      final fullName = _nameController.text.trim();
+
+      final response = await Supabase.instance.client.auth.signUp(
+        email: email,
+        password: password,
+        data: {'full_name': fullName},
+      );
+
+      if (response.user != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Cuenta creada para ${_nameController.text}')),
+          const SnackBar(content: Text('Cuenta creada. Verifica tu email.')),
         );
-        Navigator.pop(context);
-      });
+        Navigator.pushNamed(context, '/restaurant');
+      } else if (response.session == null && response.user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No se pudo registrar el usuario.')),
+        );
+      }
+    } on AuthException catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${error.message}')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error inesperado: $e')),
+      );
+    } finally {
+      setState(() => _isLoading = false);
     }
   }
 
@@ -46,7 +75,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Registro'),
         actions: [
           IconButton(
             icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
@@ -61,9 +89,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                const Text('Crear una cuenta',
-                    style:
-                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                const Text(
+                  'Crear una cuenta',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 32),
                 TextFormField(
                   controller: _nameController,
@@ -72,7 +101,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     prefixIcon: Icon(Icons.person),
                   ),
                   validator: (value) =>
-                      value!.isEmpty ? 'Ingrese su nombre' : null,
+                      (value == null || value.isEmpty) ? 'Ingrese su nombre' : null,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -100,7 +129,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     prefixIcon: Icon(Icons.lock),
                   ),
                   obscureText: true,
-                  validator: (value) => value!.length < 6
+                  validator: (value) => value != null && value.length < 6
                       ? 'La contraseña debe tener al menos 6 caracteres'
                       : null,
                 ),
@@ -122,7 +151,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 16),
                 TextButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.pushReplacementNamed(context, '/');
                   },
                   child: const Text('¿Ya tienes cuenta? Inicia sesión'),
                 ),
@@ -149,3 +178,4 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 }
+
