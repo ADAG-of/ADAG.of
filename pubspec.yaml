@@ -23,8 +23,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/logo_crema.png
-    - assets/images/logo_naranja.png
+    - assets/images/logo.png
     - assets/images/nomades.png
     - assets/images/bocatto.png
     - assets/images/Pizza40.png

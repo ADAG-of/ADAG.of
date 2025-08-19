@@ -19,7 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   bool _obscurePassword = true;
 
-  String? _loginError; // <-- Aquí guardamos el error del login
+  String? _loginError;
 
   @override
   void dispose() {
@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formKey.currentState?.validate() ?? false) {
       setState(() {
         _isLoading = true;
-        _loginError = null; // Limpia errores anteriores
+        _loginError = null;
       });
 
       final email = _emailController.text.trim();
@@ -50,11 +50,11 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           );
         }
-      } on AuthException catch (e) {
+      } on AuthException catch (_) {
         setState(() {
           _loginError = 'Correo o contraseña incorrectos';
         });
-      } catch (e) {
+      } catch (_) {
         setState(() {
           _loginError = 'Error inesperado. Intenta nuevamente.';
         });
@@ -66,17 +66,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
-    final bool isOrangeBackground = backgroundColor == const Color(0xFFFF5722);
-    final String logoAsset = isOrangeBackground
-        ? 'assets/images/logo_naranja.png'
-        : 'assets/images/logo_crema.png';
-
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
-            icon: Icon(isOrangeBackground ? Icons.light_mode : Icons.dark_mode),
+            icon: Icon(
+              Theme.of(context).brightness == Brightness.dark
+                  ? Icons.light_mode
+                  : Icons.dark_mode,
+            ),
             onPressed: widget.toggleTheme,
           ),
         ],
@@ -88,11 +86,13 @@ class _LoginScreenState extends State<LoginScreen> {
           child: ListView(
             shrinkWrap: true,
             children: [
-              Image.asset(logoAsset, width: 200, height: 200),
+              Image.asset('assets/images/logo.png', width: 200, height: 200), // ✅ Logo fijo
               const SizedBox(height: 16),
-              const Text('ADAG',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              const Text(
+                'ADAG',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 32),
               TextFormField(
                 controller: _emailController,
