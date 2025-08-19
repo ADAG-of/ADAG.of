@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'restaurant_detail_screen.dart';
+import 'map_screen.dart';
+
 
 class RestaurantListScreen extends StatefulWidget {
   @override
@@ -61,29 +63,33 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
         title: Stack(
           children: [
             Align(
-              alignment: Alignment.center,
-              child: Text(
-                'Restaurantes',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
+  alignment: Alignment.centerLeft,
+  child: GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const MapScreen()),
+      );
+    },
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: const [
+        Icon(Icons.location_on, size: 20),
+        SizedBox(width: 4),
+        Flexible(
+          child: Text(
+            'Posadas',
+            style: TextStyle(
+              fontSize: 12,
+              decoration: TextDecoration.underline, // opcional
+              overflow: TextOverflow.ellipsis,
             ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(Icons.location_on, size: 20),
-                  SizedBox(width: 4),
-                  Flexible(
-                    child: Text(
-                      'Posadas',
-                      style: TextStyle(fontSize: 12),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          ),
+        ),
+      ],
+    ),
+  ),
+)
           ],
         ),
       ),
