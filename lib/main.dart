@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 import 'login_screen.dart';
 import 'register_screen.dart';
-import 'intro_register_screen.dart'; 
-import 'restaurant_list_screen.dart'; 
-import 'restaurant_detail_screen.dart';
-// ignore: depend_on_referenced_packages
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'intro_register_screen.dart';
+import 'restaurant_list_screen.dart';
+import 'splash_screen.dart'; 
+import 'favoritos.dart';
+import 'cuenta.dart';
+import 'Home_Screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Supabase.initialize(
-   url: 'https://xrctlyuqufliufyqazxi.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyY3RseXVxdWZsaXVmeXFhenhpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcxODkwODcsImV4cCI6MjA2Mjc2NTA4N30.NVmkv0SRNSbV7ampWVVA34Uf4hJnHO4Zwb5CKccepmo',
+    url: 'https://xrctlyuqufliufyqazxi.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyY3RseXVxdWZsaXVmeXFhenhpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcxODkwODcsImV4cCI6MjA2Mjc2NTA4N30.NVmkv0SRNSbV7ampWVVA34Uf4hJnHO4Zwb5CKccepmo',
   );
 
   runApp(const MyApp());
@@ -42,16 +46,19 @@ class _MyAppState extends State<MyApp> {
       title: 'ADAG',
       debugShowCheckedModeBanner: false,
       theme: _isDarkMode ? _darkTheme : _lightTheme,
-      initialRoute: '/',
+      initialRoute: '/', // arranca en SplashScreen
       routes: {
-        '/': (context) => LoginScreen(toggleTheme: _toggleTheme),
+        '/': (context) => const SplashScreen(),
+        '/login': (context) => LoginScreen(toggleTheme: _toggleTheme),
         '/intro': (context) => IntroRegisterScreen(toggleTheme: _toggleTheme),
         '/register': (context) => RegisterScreen(toggleTheme: _toggleTheme),
         '/restaurant': (context) => RestaurantListScreen(),
+        '/home': (context) => const HomeScreen(), // 👈 agregada ruta principal
       },
     );
   }
 
+  // 🎨 Tema claro
   final ThemeData _lightTheme = ThemeData(
     primarySwatch: Colors.deepOrange,
     primaryColor: const Color(0xFFe4e2dd),
@@ -82,6 +89,7 @@ class _MyAppState extends State<MyApp> {
     ),
   );
 
+  // 🎨 Tema oscuro
   final ThemeData _darkTheme = ThemeData(
     primarySwatch: Colors.deepOrange,
     primaryColor: const Color(0xFFdb4a2b),
@@ -117,3 +125,4 @@ class _MyAppState extends State<MyApp> {
     ),
   );
 }
+

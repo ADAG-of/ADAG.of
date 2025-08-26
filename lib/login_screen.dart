@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'restaurant_list_screen.dart';
+import 'Home_Screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => RestaurantListScreen(),
+              builder: (context) => HomeScreen(),
             ),
           );
         }
