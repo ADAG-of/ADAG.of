@@ -4,11 +4,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'login_screen.dart';
 import 'register_screen.dart';
 import 'intro_register_screen.dart';
-import 'restaurant_list_screen.dart';
+import 'Inicio_screen.dart';
 import 'splash_screen.dart'; 
+import 'Home_Screen.dart';
 import 'favoritos.dart';
 import 'cuenta.dart';
-import 'Home_Screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,7 +52,7 @@ class _MyAppState extends State<MyApp> {
         '/login': (context) => LoginScreen(toggleTheme: _toggleTheme),
         '/intro': (context) => IntroRegisterScreen(toggleTheme: _toggleTheme),
         '/register': (context) => RegisterScreen(toggleTheme: _toggleTheme),
-        '/restaurant': (context) => RestaurantListScreen(),
+        '/inicio': (context) => InicioScreen(),
         '/home': (context) => const HomeScreen(), // 👈 agregada ruta principal
       },
     );

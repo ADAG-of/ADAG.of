@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'favoritos.dart';
 import 'cuenta.dart';
-import 'Restaurant_List_Screen.dart';
+import 'Inicio_Screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,7 +14,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    RestaurantListScreen(), // 👈 tu pantalla de Menús
+    InicioScreen(), // 👈 tu pantalla de iniio
     FavoritosPage(),        // 👈 pantalla de Favoritos
     CuentaPage(),           // 👈 pantalla de Cuenta
   ];

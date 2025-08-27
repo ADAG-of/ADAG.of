@@ -3,12 +3,12 @@ import 'restaurant_detail_screen.dart';
 import 'map_screen.dart';
 
 
-class RestaurantListScreen extends StatefulWidget {
+class RestauranteScreen extends StatefulWidget {
   @override
-  _RestaurantListScreenState createState() => _RestaurantListScreenState();
+  _RestauranteScreenState createState() => _RestauranteScreenState();
 }
 
-class _RestaurantListScreenState extends State<RestaurantListScreen> {
+class _RestauranteScreenState extends State<RestauranteScreen> {
   final List<Map<String, String>> restaurants = [
     {
       'name': 'Nomades',
@@ -71,23 +71,6 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
         MaterialPageRoute(builder: (_) => const MapScreen()),
       );
     },
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: const [
-        Icon(Icons.location_on, size: 20),
-        SizedBox(width: 4),
-        Flexible(
-          child: Text(
-            'Posadas',
-            style: TextStyle(
-              fontSize: 12,
-              decoration: TextDecoration.underline, // opcional
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-      ],
-    ),
   ),
 )
           ],
@@ -126,7 +109,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                   crossAxisCount: 2,
                   mainAxisSpacing: 12,
                   crossAxisSpacing: 12,
-                  childAspectRatio: 0.82, // reduce altura blanca
+                  childAspectRatio: 0.98, 
                 ),
                 itemBuilder: (context, i) {
                   final index = filteredRestaurants[i]['index'] as int;
