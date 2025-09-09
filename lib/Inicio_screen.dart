@@ -10,7 +10,7 @@ class InicioScreen extends StatefulWidget {
 class _InicioScreenState extends State<InicioScreen> {
   final Map<String, String> restaurant = {
     'name': 'Restaurantes',
-    'image': 'assets/images/animacion.gif',
+    'image': 'assets/images/anima.gif',
     'type': 'Comida variada',
   };
 

@@ -14,16 +14,10 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    InicioScreen(), // 👈 tu pantalla de iniio
-    FavoritosPage(),        // 👈 pantalla de Favoritos
-    CuentaPage(),           // 👈 pantalla de Cuenta
+    InicioScreen(),
+    FavoritosPage(),
+    CuentaPage(),
   ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +28,15 @@ class _HomeScreenState extends State<HomeScreen> {
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.deepOrange,
         unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.restaurant_menu),
-            label: 'Menús',
+            label: 'Inicio',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
