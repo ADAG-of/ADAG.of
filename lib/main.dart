@@ -9,6 +9,8 @@ import 'splash_screen.dart';
 import 'Home_Screen.dart';
 import 'favoritos.dart';
 import 'cuenta.dart';
+import 'datos_personales.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

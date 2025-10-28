@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'restaurant_detail_screen.dart';
-import 'map_screen.dart';
-
 
 class RestauranteScreen extends StatefulWidget {
   @override
@@ -59,22 +57,14 @@ class _RestauranteScreenState extends State<RestauranteScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Stack(
-          children: [
-            Align(
-  alignment: Alignment.centerLeft,
-  child: GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const MapScreen()),
-      );
-    },
-  ),
-)
-          ],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);  // volver a la pantalla anterior:
+          },
         ),
+        title: const Text("Restaurantes"),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(12),
@@ -109,7 +99,7 @@ class _RestauranteScreenState extends State<RestauranteScreen> {
                   crossAxisCount: 2,
                   mainAxisSpacing: 12,
                   crossAxisSpacing: 12,
-                  childAspectRatio: 0.98, 
+                  childAspectRatio: 0.98,
                 ),
                 itemBuilder: (context, i) {
                   final index = filteredRestaurants[i]['index'] as int;
@@ -146,8 +136,8 @@ class _RestauranteScreenState extends State<RestauranteScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           ClipRRect(
-                            borderRadius:
-                                const BorderRadius.vertical(top: Radius.circular(16)),
+                            borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(16)),
                             child: Image.asset(
                               restaurant['image']!,
                               height: 100,
@@ -161,8 +151,8 @@ class _RestauranteScreenState extends State<RestauranteScreen> {
                               children: [
                                 Text(
                                   restaurant['name']!,
-                                  style:
-                                      const TextStyle(fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
@@ -176,7 +166,8 @@ class _RestauranteScreenState extends State<RestauranteScreen> {
                                     isFavorite
                                         ? Icons.favorite
                                         : Icons.favorite_border,
-                                    color: isFavorite ? Colors.red : Colors.grey,
+                                    color:
+                                        isFavorite ? Colors.red : Colors.grey,
                                   ),
                                   onPressed: () {
                                     setState(() {

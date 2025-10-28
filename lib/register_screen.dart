@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-// Asegúrate que en main.dart esté esta línea:
-// final supabase = Supabase.instance.client;
-
 class RegisterScreen extends StatefulWidget {
   final VoidCallback toggleTheme;
 
@@ -19,6 +16,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+
   bool _isLoading = false;
 
   @override
@@ -30,40 +28,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  Future<void> _register() async {
+  Future<void> _registrarUsuario() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     setState(() => _isLoading = true);
 
-    try {
-      final email = _emailController.text.trim();
-      final password = _passwordController.text.trim();
-      final fullName = _nameController.text.trim();
+    final supabase = Supabase.instance.client;
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final fullName = _nameController.text.trim();
 
-      final response = await Supabase.instance.client.auth.signUp(
+    try {
+      final res = await supabase.auth.signUp(
         email: email,
         password: password,
-        data: {'full_name': fullName},
+        emailRedirectTo: null,
       );
 
-      if (response.user != null) {
+      final userId = res.user?.id ?? supabase.auth.currentUser?.id;
+
+      if (userId == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Cuenta creada. Verifica tu email.')),
+          const SnackBar(content: Text("No se pudo obtener el ID del usuario.")),
         );
-        Navigator.pushNamed(context, '/restaurant');
-      } else if (response.session == null && response.user == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No se pudo registrar el usuario.')),
-        );
+        return;
       }
-    } on AuthException catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${error.message}')),
-      );
+
+      // Navega al inicio de la app
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, "/home");
+      }
+    } on AuthException catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Error: ${e.message}")));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error inesperado: $e')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Error: $e")));
     } finally {
       setState(() => _isLoading = false);
     }
@@ -147,7 +147,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           : null,
                 ),
                 const SizedBox(height: 24),
-                buildSubmitButton('Registrarse', _register, _isLoading),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : _registrarUsuario,
+                    child: _isLoading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text("Registrarse"),
+                  ),
+                ),
                 const SizedBox(height: 16),
                 TextButton(
                   onPressed: () {
@@ -162,20 +170,4 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
-
-  Widget buildSubmitButton(String text, VoidCallback onPressed, bool isLoading) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: isLoading ? null : onPressed,
-        child: isLoading
-            ? const CircularProgressIndicator(color: Colors.white)
-            : Text(text),
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-        ),
-      ),
-    );
-  }
 }
-

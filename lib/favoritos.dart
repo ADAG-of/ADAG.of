@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 class FavoritosPage extends StatelessWidget {
   const FavoritosPage({super.key});
 
-  @override
+   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text("Aquí van tus favoritos"),
+    return Scaffold(
+      appBar: AppBar(title: Text("Favoritos")),
+      body: Center(child: Text("Aquí van los menus favoritos")),
     );
   }
 }
