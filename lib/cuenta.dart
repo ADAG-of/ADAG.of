@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'datos_personales.dart';
-import 'preferencias_alimenticias.dart';
-import 'direcciones.dart';
-import 'favoritos.dart';
-import 'notificaciones.dart';
-import 'informacion_legal.dart';
+
+
 
 class CuentaPage extends StatefulWidget {
   const CuentaPage({super.key});
@@ -77,8 +74,8 @@ class _CuentaPageState extends State<CuentaPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); // ✅ Regresa a la pantalla anterior
-          },
+             Navigator.pushNamed(context, '/inicio');
+          }
         ),
       ),
       body: _loading
@@ -92,97 +89,14 @@ class _CuentaPageState extends State<CuentaPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const DatosPersonales(),
-                      ),
+                      MaterialPageRoute(builder: (context) => const DatosPersonalesPage()),
                     );
                   },
                 ),
                 
-                _buildListTile(
-                  Icons.restaurant_menu,
-                  "Preferencias Alimenticias",
-                  subtitle: dieta != null
-                      ? "Dieta: $dieta\nAlergias: ${alergias.isEmpty ? "Ninguna" : alergias.join(", ")}"
-                      : "No configuradas",
-                  onTap: () {
-                    final user = Supabase.instance.client.auth.currentUser;
-                    if (user != null) {
-                      // Usar nombre si existe, si no el inicio del email, si no string vacío
-                      final nombre = (user.userMetadata?['nombre'] as String?) ??
-                          user.email?.split('@').first ??
-                          '';
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PreferenciasScreen(
-                            email: user.email ?? '',
-                            nombre: nombre,
-                          ),
-                        ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Debes iniciar sesión para editar tus preferencias.")),
-                      );
-                    }
-                  },
-                ),
 
-                _buildListTile(
-                  Icons.location_on_outlined,
-                  "Direcciones",
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Direcciones(),
-                      ),
-                    );
-                  },
-                ),
-                _buildListTile(
-                  Icons.favorite_border,
-                  "Favoritos",
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const FavoritosPage(),
-                      ),
-                    );
-                  },
-                ),
                 const Divider(),
                 _buildSectionTitle("Configuración"),
-                _buildListTile(
-                  Icons.notifications_none,
-                  "Notificaciones",
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Notificaciones(),
-                      ),
-                    );
-                  },
-                ),
-                _buildListTile(
-                  Icons.info_outline,
-                  "Información legal",
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const InformacionLegal(),
-                      ),
-                    );
-                  },
-                ),
-                _buildListTile(
-                  Icons.store_mall_directory_outlined,
-                  "Registrar mi negocio",
-                ),
                 _buildListTile(
                   Icons.logout,
                   "Cerrar sesión",

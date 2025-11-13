@@ -9,69 +9,57 @@ class InicioScreen extends StatefulWidget {
 
 class _InicioScreenState extends State<InicioScreen> {
   final Map<String, String> restaurant = {
-    'name': 'Restaurantes',
+    'name': 'Mis Restaurantes Favoritos',
     'image': 'assets/images/anima.gif',
     'type': 'Comida variada',
   };
 
   String searchQuery = '';
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const MapScreen()),
-            );
-          },
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: const [
-              Icon(Icons.location_on, size: 20),
-              SizedBox(width: 4),
-              Flexible(
-                child: Text(
-                  'Posadas',
-                  style: TextStyle(
-                    fontSize: 12,
-                    decoration: TextDecoration.underline,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            // 🔍 Campo de búsqueda
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
+ @override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      automaticallyImplyLeading: false,
+      // Quitamos el título porque ya no usás “Posadas”
+      title: null,
+    ),
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          // 🔍 Search "falso" que abre el mapa
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const MapScreen()),
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
               decoration: BoxDecoration(
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(25),
               ),
-              child: TextField(
-                onChanged: (value) {
-                  setState(() {
-                    searchQuery = value;
-                  });
-                },
-                decoration: const InputDecoration(
-                  hintText: '¿Qué quieres comer hoy?',
-                  border: InputBorder.none,
-                  icon: Icon(Icons.search),
-                ),
+              child: Row(
+                children: [
+                  const Icon(Icons.location_on, color: Colors.deepOrange),
+                  const SizedBox(width: 10),
+                  Text(
+                    '¿A donde quieres ir a comer hoy?',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 20),
+          ),
+
+          const SizedBox(height: 20),
+
 
             // ✅ Tarjeta centrada
             Expanded(
@@ -80,12 +68,10 @@ class _InicioScreenState extends State<InicioScreen> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (_) => RestauranteScreen(
-                        ),
-                      ),
+                      MaterialPageRoute(builder: (_) => const RestauranteScreen()),
                     );
                   },
+
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width * 0.75, // 👈 ancho estilo "PedidosYa"
                     height: 250,

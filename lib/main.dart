@@ -7,10 +7,9 @@ import 'intro_register_screen.dart';
 import 'Inicio_screen.dart';
 import 'splash_screen.dart'; 
 import 'Home_Screen.dart';
-import 'favoritos.dart';
 import 'cuenta.dart';
 import 'datos_personales.dart';
-
+import 'map_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,6 +55,8 @@ class _MyAppState extends State<MyApp> {
         '/register': (context) => RegisterScreen(toggleTheme: _toggleTheme),
         '/inicio': (context) => InicioScreen(),
         '/home': (context) => const HomeScreen(), // 👈 agregada ruta principal
+        '/map': (context) => const MapScreen(), // tu pantalla de mapa
+        '/datos_personales': (context) => const DatosPersonalesPage(),
       },
     );
   }

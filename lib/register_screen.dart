@@ -28,46 +28,56 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  Future<void> _registrarUsuario() async {
-    if (!(_formKey.currentState?.validate() ?? false)) return;
+ Future<void> _registrarUsuario() async {
+  if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    setState(() => _isLoading = true);
+  setState(() => _isLoading = true);
 
-    final supabase = Supabase.instance.client;
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
-    final fullName = _nameController.text.trim();
+  final supabase = Supabase.instance.client;
+  final email = _emailController.text.trim();
+  final password = _passwordController.text.trim();
+  final fullName = _nameController.text.trim();
 
-    try {
-      final res = await supabase.auth.signUp(
-        email: email,
-        password: password,
-        emailRedirectTo: null,
-      );
+  try {
+    // Crear usuario en auth
+    final res = await supabase.auth.signUp(
+      email: email,
+      password: password,
+    );
 
-      final userId = res.user?.id ?? supabase.auth.currentUser?.id;
-
-      if (userId == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("No se pudo obtener el ID del usuario.")),
-        );
-        return;
-      }
-
-      // Navega al inicio de la app
-      if (mounted) {
-        Navigator.pushReplacementNamed(context, "/home");
-      }
-    } on AuthException catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Error: ${e.message}")));
-    } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Error: $e")));
-    } finally {
-      setState(() => _isLoading = false);
+    final user = res.user;
+    if (user == null) {
+      throw Exception("No se pudo obtener el usuario luego del registro.");
     }
+
+    // Crear el perfil en la tabla 'perfiles'
+    await supabase.from('perfiles').insert({
+      'usuario_id': user.id,
+      'nombre_usuario': fullName,
+      'telefono': '',
+      'direccion': '',
+      'activo': true,
+      'creado_en': DateTime.now().toIso8601String(),
+      'actualizado_en': DateTime.now().toIso8601String(),
+    });
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Cuenta creada correctamente")),
+      );
+      Navigator.pushReplacementNamed(context, "/home");
+    }
+  } on AuthException catch (e) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text("Error: ${e.message}")));
+  } catch (e) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text("Error: $e")));
+  } finally {
+    setState(() => _isLoading = false);
   }
+}
+
 
   @override
   Widget build(BuildContext context) {

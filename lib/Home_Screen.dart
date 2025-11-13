@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'favoritos.dart';
 import 'cuenta.dart';
 import 'Inicio_Screen.dart';
 
@@ -15,7 +14,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _pages = [
     InicioScreen(),
-    FavoritosPage(),
     CuentaPage(),
   ];
 
@@ -37,10 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.restaurant_menu),
             label: 'Inicio',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favoritos',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
