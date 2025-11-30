@@ -14,7 +14,7 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  final LatLng _fallbackCoords = LatLng(-27.362137, -55.900875);
+ final LatLng _fallbackCoords = LatLng(-27.362137, -55.900875);
   LatLng? _currentCoords;
   LatLng? _selectedDestination;
   String? _selectedRestaurantName;
@@ -49,6 +49,36 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<void> _getUserLocation() async {
+  try {
+    // Ver si es Web
+    bool isWeb = identical(0, 0.0);
+
+    if (isWeb) {
+      // 🌐 Web → intentar obtener posición con timeout
+      final pos = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      ).timeout(const Duration(seconds: 4), onTimeout: () {
+        return Position(
+          latitude: _fallbackCoords.latitude,
+          longitude: _fallbackCoords.longitude,
+          timestamp: DateTime.now(),
+          accuracy: 1,
+          altitude: 0,
+          heading: 0,
+          speed: 0,
+          speedAccuracy: 1,
+          altitudeAccuracy: 1,
+          headingAccuracy: 1,
+        );
+      });
+
+      setState(() {
+        _currentCoords = LatLng(pos.latitude, pos.longitude);
+      });
+      return;
+    }
+
+    // 📱 Mobile nativo
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       setState(() => _currentCoords = _fallbackCoords);
@@ -73,7 +103,12 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {
       _currentCoords = LatLng(position.latitude, position.longitude);
     });
+  } catch (e) {
+    // ❌ Si falla → usar fallback
+    setState(() => _currentCoords = _fallbackCoords);
   }
+}
+
 
   Future<void> _loadNearbyRestaurants() async {
     final url = Uri.parse(
